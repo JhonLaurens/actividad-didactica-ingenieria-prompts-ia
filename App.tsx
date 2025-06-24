@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation';
 import SectionRenderer from './components/SectionRenderer';
 import AchievementToast from './components/AchievementToast';
+import GameContextDemo from './components/GameContextDemo';
 import { activitySectionsData } from './constants';
 import { Section } from './types';
 import { GameProvider } from './contexts/GameContext';
@@ -11,6 +12,7 @@ import { useGame } from './contexts/GameContext';
 
 const AppContent: React.FC = () => {
   const [currentSectionId, setCurrentSectionId] = useState<string>(activitySectionsData[0]?.id || '');
+  const [showDevMode, setShowDevMode] = useState<boolean>(false);
   const { state, dispatch } = useGame();
 
   const handleSelectSection = (sectionId: string) => {
@@ -59,19 +61,38 @@ const AppContent: React.FC = () => {
       
       <AchievementToast />
       
-      <Navigation 
-        currentSectionId={currentSectionId} 
-        onSelectSection={handleSelectSection} 
-      />
-      <main id="content-area" className="flex-1 p-8 md:p-10 ml-64 overflow-y-auto">
-        {currentSection ? (
-          <SectionRenderer section={currentSection} />
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-xl text-neutral-dark">Por favor, selecciona una sección para comenzar.</p>
-          </div>
-        )}
-      </main>
+      {/* Development Mode Toggle */}
+      <button
+        onClick={() => setShowDevMode(!showDevMode)}
+        className="fixed top-4 right-4 z-50 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-xs font-medium transition-colors shadow-lg"
+        title="Toggle GameContext Development Mode"
+      >
+        {showDevMode ? '📱 App' : '🔧 Dev'}
+      </button>
+      
+      {showDevMode ? (
+        /* Development Mode */
+        <div className="w-full p-6">
+          <GameContextDemo />
+        </div>
+      ) : (
+        /* Normal App Mode */
+        <>
+          <Navigation 
+            currentSectionId={currentSectionId} 
+            onSelectSection={handleSelectSection} 
+          />
+          <main id="content-area" className="flex-1 p-8 md:p-10 ml-64 overflow-y-auto">
+            {currentSection ? (
+              <SectionRenderer section={currentSection} />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <p className="text-xl text-neutral-dark">Por favor, selecciona una sección para comenzar.</p>
+              </div>
+            )}
+          </main>
+        </>
+      )}
     </div>
   );
 };

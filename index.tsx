@@ -6,7 +6,7 @@ import DevApp from './DevApp';
 
 // Use DevApp for testing GameContext improvements
 // Change isDevelopment to false to use the normal App
-const isDevelopment = true;
+const isDevelopment = false;
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
